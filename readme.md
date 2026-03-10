@@ -23,7 +23,7 @@ Install [MSYS2](https://www.msys2.org/). It comes with three shells, launch the 
 Install dependencies:
 ```bash
 pacman -Syu
-pacman -Sy mingw-w64-clang-x86_64-clang mingw-w64-clang-x86_64-libpng mingw-w64-clang-x86_64-libzip mingw-w64-clang-x86_64-mimalloc mingw-w64-clang-x86_64-cmake mingw-w64-clang-x86_64-ninja make zip mingw-w64-clang-x86_64-dwarfstack mingw-w64-clang-x86_64-zig mingw-w64-clang-x86_64-rustup
+pacman -Sy git mingw-w64-clang-x86_64-clang mingw-w64-clang-x86_64-libpng mingw-w64-clang-x86_64-libzip mingw-w64-clang-x86_64-mimalloc mingw-w64-clang-x86_64-cmake mingw-w64-clang-x86_64-ninja make zip mingw-w64-clang-x86_64-dwarfstack mingw-w64-clang-x86_64-zig mingw-w64-clang-x86_64-rustup
 make build-sdl3 build-sdl3-mixer
 rustup toolchain install stable-x86_64-pc-windows-gnullvm
 rustup default stable-x86_64-pc-windows-gnullvm
