@@ -155,32 +155,31 @@ int hover_capture_text(char *line)
 		return 0;
 	}
 
-	{
-		const char *itemdesc = strstr(line, "ITEMDESC");
-		if (!itemdesc && line[0] == RENDER_TEXT_TERMINATOR) {
-			itemdesc = strstr(line + 1, "ITEMDESC");
+	const char *itemdesc = strstr(line, "ITEMDESC");
+	if (!itemdesc && line[0] == RENDER_TEXT_TERMINATOR) {
+		itemdesc = strstr(line + 1, "ITEMDESC");
+	}
+	if (itemdesc) {
+		last_invsel = atoi(itemdesc + 8);
+		
+		if (last_invsel >= 1000) {
+			last_invsel = last_invsel % 1000 + _inventorysize;
 		}
-		if (itemdesc) {
-			int raw_slot = atoi(itemdesc + 8);
-			last_invsel = raw_slot;
-			if (last_invsel >= 1000) {
-				last_invsel = last_invsel % 1000 + _inventorysize;
-			}
-			if (last_invsel < 0 || last_invsel >= MAX_INVENTORYSIZE + MAX_CONTAINERSIZE) {
-				last_invsel = capture = last_look = 0;
-				return 1;
-			}
-			if (last_invsel == last_right_click_invsel) {
-				last_right_click_invsel = -1;
-				ignore_capture = 1;
-				capture = last_look = 0;
-				return 1;
-			}
-			capture = 1;
-			last_look = 20;
-			last_line = 0;
+		if (last_invsel < 0 || last_invsel >= MAX_INVENTORYSIZE + MAX_CONTAINERSIZE) {
+			last_invsel = capture = last_look = 0;
 			return 1;
 		}
+		if (last_invsel == last_right_click_invsel) {
+			last_right_click_invsel = -1;
+			ignore_capture = 1;
+			capture = last_look = 0;
+			return 1;
+		}
+		
+		capture = 1;
+		last_look = 20;
+		last_line = 0;
+		return 1;
 	}
 
 	if (line[0] == RENDER_TEXT_TERMINATOR && line[1] == 'c' && line[2] == '5' && last_look) {
@@ -191,7 +190,6 @@ int hover_capture_text(char *line)
 		capture = last_look = ignore_capture = 0;
 		last_right_click_invsel = -1;
 		return 1;
-			
 	}
 
 	if (capture) {
