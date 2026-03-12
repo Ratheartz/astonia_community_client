@@ -109,6 +109,7 @@ struct hover_item {
 static struct hover_item hi[MAX_INVENTORYSIZE + MAX_CONTAINERSIZE] = {0};
 
 static int last_look = 0, last_invsel = -1, last_line = 0, capture = 0;
+static int ignore_capture = 0;
 static tick_t last_tick = 0;
 
 static int textlength(char *text)
@@ -145,16 +146,36 @@ int hover_capture_text(char *line)
 		line++;
 	}
 
-	if (line[0] == RENDER_TEXT_TERMINATOR && line[1] == RENDER_TEXT_TERMINATOR && line[2] == RENDER_TEXT_TERMINATOR &&
-	    strncmp(line + 3, "ITEMDESC", 8) == 0) {
-		last_invsel = atoi(line + 11);
+	if (ignore_capture) {
+		if (!strcmp(line, ".") || !strcmp(line, "?") || !strcmp(line, "Empty spaces...")
+		    || (line[0] == RENDER_TEXT_TERMINATOR && line[1] == 'c' && line[2] == '5' && line[3] == '.' && line[4] == 0) ) {
+			ignore_capture = 0;
+			return 1;
+		}
+		return 0;
+	}
+
+	const char *itemdesc = strstr(line, "ITEMDESC");
+	if (!itemdesc && line[0] == RENDER_TEXT_TERMINATOR) {
+		itemdesc = strstr(line + 1, "ITEMDESC");
+	}
+	if (itemdesc) {
+		last_invsel = atoi(itemdesc + 8);
+		
 		if (last_invsel >= 1000) {
 			last_invsel = last_invsel % 1000 + _inventorysize;
 		}
-		if (last_invsel < 0 || last_invsel > _inventorysize * 2) {
+		if (last_invsel < 0 || last_invsel >= MAX_INVENTORYSIZE + MAX_CONTAINERSIZE) {
 			last_invsel = capture = last_look = 0;
 			return 1;
 		}
+		if (last_invsel == last_right_click_invsel) {
+			last_right_click_invsel = -1;
+			ignore_capture = 1;
+			capture = last_look = 0;
+			return 1;
+		}
+		
 		capture = 1;
 		last_look = 20;
 		last_line = 0;
@@ -165,14 +186,8 @@ int hover_capture_text(char *line)
 		capture = 1;
 	}
 
-	if (line[0] == RENDER_TEXT_TERMINATOR && line[1] == 'c' && line[2] == '5' && line[3] == '.') {
-		capture = last_look = 0;
-		last_right_click_invsel = -1;
-		return 1;
-	}
-
-	if (!strcmp(line, "Empty spaces...")) {
-		capture = last_look = 0;
+	if ((line[0] == RENDER_TEXT_TERMINATOR && line[1] == 'c' && line[2] == '5' && line[3] == '.') || !strcmp(line, ".") || !strcmp(line, "?") || !strcmp(line, "Empty spaces...")) {
+		capture = last_look = ignore_capture = 0;
 		last_right_click_invsel = -1;
 		return 1;
 	}
@@ -184,11 +199,7 @@ int hover_capture_text(char *line)
 		hi[last_invsel].cnt = last_line;
 		hi[last_invsel].width = max(hi[last_invsel].width, len);
 
-		if (last_invsel == last_right_click_invsel) {
-			return 0;
-		} else {
-			last_right_click_invsel = -1;
-		}
+		last_right_click_invsel = -1;
 	}
 
 	return capture;
@@ -222,7 +233,7 @@ void hover_invalidate_inv_delayed(int slot)
 
 void hover_invalidate_con(int slot)
 {
-	if (slot < 0 || slot >= _inventorysize) {
+	if (slot < 0 || slot >= MAX_CONTAINERSIZE) {
 		return;
 	}
 	hi[slot + _inventorysize].valid_till = 0;
