@@ -610,10 +610,78 @@ static char *roman(int nr)
 	return buf;
 }
 
+// render game name, level, and health/mana bars for a character on the map
+static void render_game_name_for_mn(map_index_t mn, int scrx, int scry, const unsigned short *clancolor)
+{
+	int x, y, col, frame;
+	char *sign;
+
+	x = scrx + map[mn].xadd;
+	y = scry + 4 + (int)map[mn].yadd + get_chr_height(map[mn].csprite) - 25 + get_sink(mn, map);
+
+	col = whitecolor;
+	frame = RENDER_TEXT_FRAMED;
+
+	if (player[map[mn].cn].clan) {
+		col = clancolor[((player[map[mn].cn].clan - 1) % 32) + 1];
+		if (player[map[mn].cn].clan == 3) {
+			frame = RENDER_TEXT_WFRAME;
+		}
+	}
+
+	sign = "";
+	if (player[map[mn].cn].pk_status == 5) {
+		sign = " **";
+	} else if (player[map[mn].cn].pk_status == 4) {
+		sign = " *";
+	} else if (player[map[mn].cn].pk_status == 3) {
+		sign = " ++";
+	} else if (player[map[mn].cn].pk_status == 2) {
+		sign = " +";
+	} else if (player[map[mn].cn].pk_status == 1) {
+		sign = " -";
+	}
+
+	if (namesize != RENDER_TEXT_SMALL) {
+		y -= 3;
+	}
+	render_text_fmt(
+	    x, y, (unsigned short)col, RENDER_ALIGN_CENTER | namesize | frame, "%s%s", player[map[mn].cn].name, sign);
+
+	if (namesize != RENDER_TEXT_SMALL) {
+		y += 3;
+	}
+	y += 12;
+	render_text(x, y, whitecolor, RENDER_ALIGN_CENTER | RENDER_TEXT_SMALL | RENDER_TEXT_FRAMED,
+	    roman(player[map[mn].cn].level));
+
+	x -= 12;
+	y -= 6;
+	if (map[mn].health > 1) {
+		render_rect(x, y, x + 25, y + 1, blackcolor);
+		render_rect(x, y, x + map[mn].health / 4, y + 1, healthcolor);
+		y++;
+	}
+	if (map[mn].shield > 1) {
+		render_rect(x, y, x + 25, y + 1, blackcolor);
+		render_rect(x, y, x + map[mn].shield / 4, y + 1, shieldcolor);
+		y++;
+	}
+	if (map[mn].mana > 1) {
+		render_rect(x, y, x + 25, y + 1, blackcolor);
+		render_rect(x, y, x + map[mn].mana / 4, y + 1, manacolor);
+	}
+}
+
+// display game names, levels, and health/mana bars for all characters on the map using helper.
+// ensures player is rendered on top of others and that clan colors are used if applicable 
 static void display_game_names(void)
 {
-	int i, x, y, col, frame;
-	char *sign;
+	int i;
+	map_index_t player_mn;
+	int player_scrx = 0;
+	int player_scry = 0;
+	int has_player = 0;
 	unsigned short clancolor[33];
 
 	clancolor[1] = IRGB(31, 0, 0);
@@ -652,6 +720,8 @@ static void display_game_names(void)
 	clancolor[31] = IRGB(8, 31, 8);
 	clancolor[32] = IRGB(31, 8, 31);
 
+	player_mn = mapmn(MAPDX / 2U, MAPDY / 2U);
+
 	for (i = 0; i < maxquick; i++) {
 		map_index_t mn = quick[i].mn[4];
 		int scrx = mapaddx + quick[i].cx;
@@ -670,63 +740,19 @@ static void display_game_names(void)
 			continue;
 		}
 
-		x = scrx + map[mn].xadd;
-		y = scry + 4 + (int)map[mn].yadd + get_chr_height(map[mn].csprite) - 25 + get_sink(mn, map);
-
-		col = whitecolor;
-		frame = RENDER_TEXT_FRAMED;
-
-		if (player[map[mn].cn].clan) {
-			col = clancolor[((player[map[mn].cn].clan - 1) % 32) + 1];
-			if (player[map[mn].cn].clan == 3) {
-				frame = RENDER_TEXT_WFRAME;
-			}
+		// skip rendering player for now so they are rendered on top of others at the end
+		if (mn == player_mn) {
+			player_scrx = scrx;
+			player_scry = scry;
+			has_player = 1;
+			continue;
 		}
 
-		sign = "";
-		if (player[map[mn].cn].pk_status == 5) {
-			sign = " **";
-		} else if (player[map[mn].cn].pk_status == 4) {
-			sign = " *";
-		} else if (player[map[mn].cn].pk_status == 3) {
-			sign = " ++";
-		} else if (player[map[mn].cn].pk_status == 2) {
-			sign = " +";
-		} else if (player[map[mn].cn].pk_status == 1) {
-			sign = " -";
-		}
+		render_game_name_for_mn(mn, scrx, scry, clancolor);
+	}
 
-		if (namesize != RENDER_TEXT_SMALL) {
-			y -= 3;
-		}
-		render_text_fmt(
-		    x, y, (unsigned short)col, RENDER_ALIGN_CENTER | namesize | frame, "%s%s", player[map[mn].cn].name, sign);
-
-
-		if (namesize != RENDER_TEXT_SMALL) {
-			y += 3;
-		}
-		y += 12;
-		render_text(x, y, whitecolor, RENDER_ALIGN_CENTER | RENDER_TEXT_SMALL | RENDER_TEXT_FRAMED,
-		    roman(player[map[mn].cn].level));
-
-
-		x -= 12;
-		y -= 6;
-		if (map[mn].health > 1) {
-			render_rect(x, y, x + 25, y + 1, blackcolor);
-			render_rect(x, y, x + map[mn].health / 4, y + 1, healthcolor);
-			y++;
-		}
-		if (map[mn].shield > 1) {
-			render_rect(x, y, x + 25, y + 1, blackcolor);
-			render_rect(x, y, x + map[mn].shield / 4, y + 1, shieldcolor);
-			y++;
-		}
-		if (map[mn].mana > 1) {
-			render_rect(x, y, x + 25, y + 1, blackcolor);
-			render_rect(x, y, x + map[mn].mana / 4, y + 1, manacolor);
-		}
+	if (has_player) {
+		render_game_name_for_mn(player_mn, player_scrx, player_scry, clancolor);
 	}
 }
 
