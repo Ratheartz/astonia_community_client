@@ -476,7 +476,8 @@ static void detect_hover_target(void)
 		} else {
 			// old style interface (shift/ctrl) first
 			if (vk_char) {
-				chrsel = get_near_char(mousex, mousey, MAPDX);
+				//chrsel = get_near_char(mousex, mousey, MAPDX);
+				chrsel = get_near_ex(mousex, mousey, NEAR_CHAR, MAPDX); // Changed to use get_near_ex as get_near_char used NEAR_NOTSELF which prevents selecting self. (Look)
 			}
 			if (chrsel == MAXMN && vk_item) {
 				if (csprite) {
