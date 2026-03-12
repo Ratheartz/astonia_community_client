@@ -1564,11 +1564,33 @@ void cmd_fastsell(int with)
 void cmd_use_inv(int with)
 {
 	unsigned char buf[16];
+	const uint32_t wear_mask = IF_WNHEAD | IF_WNNECK | IF_WNBODY | IF_WNARMS | IF_WNBELT | IF_WNLEGS | IF_WNFEET |
+	    IF_WNLHAND | IF_WNRHAND | IF_WNCLOAK | IF_WNLRING | IF_WNRRING | IF_WNTWOHANDED;
 
 	buf[0] = CL_USE_INV;
 	buf[1] = (unsigned char)with;
 	client_send(buf, 2);
 	hover_invalidate_inv(with);
+
+	if (with >= 30 && (item_flags[with] & wear_mask)) { // only invalidate hover if it's a wearable item in inventory (below 30 is equipment slots and spells), otherwise we might get a lot of unnecessary invalidations when swapping items in the inventory
+		uint32_t flags = item_flags[with];
+		if (flags & IF_WNRRING) 	{ hover_invalidate_inv(9); }
+		if (flags & IF_WNRHAND) 	{ hover_invalidate_inv(6); }
+		if (flags & IF_WNLHAND) 	{ hover_invalidate_inv(8); }
+		if (flags & IF_WNLRING) 	{ hover_invalidate_inv(11); }
+		if (flags & IF_WNNECK) 		{ hover_invalidate_inv(0); }
+		if (flags & IF_WNHEAD) 		{ hover_invalidate_inv(1); }
+		if (flags & IF_WNCLOAK) 	{ hover_invalidate_inv(2); }
+		if (flags & IF_WNBODY) 		{ hover_invalidate_inv(4); }
+		if (flags & IF_WNBELT) 		{ hover_invalidate_inv(5); }
+		if (flags & IF_WNARMS) 		{ hover_invalidate_inv(3); }
+		if (flags & IF_WNLEGS) 		{ hover_invalidate_inv(7); }
+		if (flags & IF_WNFEET) 		{ hover_invalidate_inv(10); }
+		if (flags & IF_WNTWOHANDED) {
+			hover_invalidate_inv(6);
+			hover_invalidate_inv(8);
+		}
+	}
 }
 
 void cmd_take(int x, int y)
