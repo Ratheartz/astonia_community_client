@@ -484,16 +484,13 @@ union ceffect {
 	struct cef_bubble bubble;
 };
 
-#define QLF_REPEATABLE (1u << 0)
-#define QLF_XREPEAT    (1u << 1)
-
 struct questlog {
+	int ID;
 	char *name;
 	int minlevel, maxlevel;
 	char *giver;
 	char *area;
-	int exp;
-	unsigned int flags;
+	int quest_level;
 };
 
 struct quest {

@@ -94,12 +94,12 @@ void minimap_compact(void);
 void minimap_areainfo(int cmd, int areaID, int server_key);
 
 struct questlog {
+	int ID;
 	char *name;
 	int minlevel, maxlevel;
 	char *giver;
 	char *area;
-	int exp;
-	unsigned int flags;
+	int quest_level;
 };
 DLL_EXPORT extern struct questlog *game_questlog;
 extern int questonscreen[10];

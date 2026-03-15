@@ -361,17 +361,18 @@ static void detect_hover_target(void)
 			}
 
 			if (display_quest && mousex >= dotx(DOT_HLP) + 165 && mousex <= dotx(DOT_HLP) + 199) {
-				int tmp, qy;
+			//	int tmp, qy;
 
-				tmp = (mousey - (doty(DOT_HLP) + 16)) / 40;
-				qy = tmp * 40 + doty(DOT_HLP) + 16;
-				if (tmp >= 0 && tmp <= 8 && mousey >= qy && mousey <= qy + 10) {
-					int qos = questonscreen[tmp];
-					if ((qos != -1) && (game_questlog[qos].flags & QLF_REPEATABLE) && (quest[qos].flags & QF_DONE) &&
-					    quest[qos].done < 10) {
-						questsel = tmp;
-					}
-				}
+			//	tmp = (mousey - (doty(DOT_HLP) + 16)) / 40;
+			//	qy = tmp * 40 + doty(DOT_HLP) + 16;
+			//	if (tmp >= 0 && tmp <= 8 && mousey >= qy && mousey <= qy + 10) {
+			//		int qos = questonscreen[tmp];
+			//		if ((qos != -1) && (game_questlog[qos].flags & QLF_REPEATABLE) && (quest[qos].flags & QF_DONE) &&
+			//			quest[qos].done < 10) {
+			//			questsel = tmp;
+			//		}
+			//	}
+				questsel = -1;
 			}
 		}
 		if (display_help) {

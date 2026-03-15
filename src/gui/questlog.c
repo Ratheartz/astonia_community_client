@@ -22,92 +22,85 @@
 static int havequest = 0;
 
 struct questlog _game_questlog[] = {
-    {"Lydia's Potion", 1, 2, "James", "Cameron", 15, QLF_REPEATABLE}, // 0,
-    {"Find the Magic Item", 2, 3, "Gwendylon", "Cameron", 75, QLF_REPEATABLE}, // 1,
-    {"The Second Skull", 3, 5, "Gwendylon", "Cameron", 150, QLF_REPEATABLE}, // 2,
-    {"The Third Skull", 5, 7, "Gwendylon", "Cameron", 300, QLF_REPEATABLE}, // 3,
-    {"Kill the Foul Magician", 6, 8, "Gwendylon", "Cameron", 800, QLF_REPEATABLE}, // 4,
-    {"Bear Hunt", 6, 8, "Yoakin", "Cameron", 600, QLF_REPEATABLE}, // 5,
-    {"A Fool's Request", 6, 8, "Nook", "Cameron", 400, 0}, // 6,
-    {"Mages Gone Berserk", 6, 9, "Guiwynn", "Cameron", 800, QLF_REPEATABLE}, // 7,
-    {"The Recipe for Happiness", 7, 10, "Guiwynn", "Cameron", 900, QLF_REPEATABLE}, // 8,
-    {"Knightly Troubles", 7, 10, "Logain", "Cameron", 1200, QLF_REPEATABLE}, // 9,
-    {"Loisan's House", 9, 12, "Seymour", "Aston", 850, 0}, // 10,
-    {"The Silver Skull", 10, 13, "Seymour", "Aston", 1000, 0}, // 11,
-    {"Find Loisan", 11, 15, "Seymour", "Aston", 1500, QLF_REPEATABLE}, // 12,
-    {"Jeepers Creepers", 12, 18, "Kelly", "Aston", 1850, QLF_REPEATABLE}, // 13,
-    {"Underground Park Shrines", 15, 20, "Kelly", "Aston", 0,
-        0}, // 14, special case: exp awarded in driver, 4500 exp total
-    {"In Search of Clara", 20, 27, "Kelly", "Aston", 2500, 0}, // 15,
-    {"The Astronomer's Notes", 15, 20, "Gerassimo", "Aston", 5000, QLF_REPEATABLE}, // 16,
-    {"The Unwanted Tenants", 9, 12, "Reskin", "Cameron", 1250, 0}, // 17,
-    {"The Toughest Monster", 20, 25, "Sir Jones", "Aston", 7500, 0}, // 18,
-    {"The Toughestest Monster", 20, 26, "Sir Jones", "Aston", 12000, 0}, // 19,
-    {"Wanted: Occult Staff", 30, 36, "Carlos", "Aston", 40000, QLF_REPEATABLE}, // 20,
-    {"Slay the Swampbeast", 23, 30, "Clara", "Swamp", 22500, 0}, // 21,
-    {"Impish Bear Hunt", 20, 27, "William/Imp", "Forest", 12500, 0}, // 22,
-    {"Praying Mantis Stew", 20, 27, "William", "Forest", 15000, 0}, // 23,
-    {"The Spider Queen", 25, 30, "Hermit", "Forest", 25000, 0}, // 24,
-    {"Earning the Lockpick", 25, 30, "Guildmaster", "Exkordon", 0,
-        QLF_XREPEAT}, // 25, exp awarded in driver, amount depends on robbers killed. range: 5000 to 20000
-    {"Extortion", 25, 30, "Guildmaster", "Exkordon", 0, QLF_XREPEAT}, // 26, exp awarded in driver, 5000 or 10000
-    {"Price Fix Exposed", 25, 30, "Guildmaster", "Exkordon", 15000, QLF_XREPEAT}, // 27,
-    {"The Golden Lockpick", 26, 33, "Guildmaster", "Exkordon", 15000, QLF_XREPEAT}, // 28,
-    {"Dirty Hands", 26, 33, "Sanwyn", "Exkordon", 0, 0}, // 29, exp awarded in driver, 45000 total
-    {"The Old Governor's Cross", 33, 40, "Skeleton", "Exkordon", 30000, QLF_REPEATABLE}, // 30,
-    {"Spider Poison", 30, 40, "Cervik", "Exkordon", 30000, QLF_REPEATABLE}, // 31,
-    {"Join the Tribe", 63, 80, "Kalanur", "Nomad Plains", 10000, 0}, // 32,
-    {"Searching Sarkilar", 63, 80, "Kir Laas", "Nomad Plains", 450000, 0}, // 33,
-    {"A Golden Statue", 72, 90, "Kir Garan", "Nomad Plains", 280000, 0}, // 34,
-    {"Smuggler Book", 10, 15, "Imp. Commander", "Below Aston 2", 1000, QLF_REPEATABLE}, // 35,
-    {"Contraband", 10, 15, "Imp. Commander", "Below Aston 2", 0, 0}, // 36, exp awarded in driver, 5000 total
-    {"Smuggler Leader", 10, 15, "Imp. Commander", "Below Aston 2", 2000, QLF_REPEATABLE}, // 37,
-    {"The Family Heirloom", 32, 40, "Aristocrat", "Bran. Forest", 40000, QLF_REPEATABLE}, // 38,
-    {"Bear Hunt - Again", 32, 36, "Yoatin", "Bran. Forest", 40000, QLF_REPEATABLE}, // 39,
-    {"The Jewels of Brannington ", 34, 40, "Count B.", "Brannington", 0,
-        QLF_REPEATABLE}, // 40, exp awarded in driver, 120k total
-    {"A Grolm's Spoils", 33, 42, "Brenneth", "Brannington", 15000, QLF_REPEATABLE}, // 41,
-    {"A Thief's Loot ", 33, 42, "Brenneth", "Brannington", 15000, QLF_REPEATABLE}, // 42,
-    {"A Necromancer's Notes", 33, 42, "Brenneth", "Brannington", 15000, QLF_REPEATABLE}, // 43,
-    {"A Rest Disturbed", 36, 43, "Spirit", "Brannington", 60000, QLF_REPEATABLE}, // 44,
-    {"Searching a Miner's Tool", 42, 48, "Broklin", "Brannington", 60000, QLF_REPEATABLE}, // 45,
-    {"A Miner's Vengeance", 44, 50, "Broklin", "Brannington", 60000, 0}, // 46,
-    {"A Miner's Misery", 85, 95, "Dwarven Chief", "Grimroot", 285000, 0}, // 47,
-    {"A Miner's Bane", 95, 105, "Dwarven Chief", "Grimroot", 395000, 0}, // 48,
-    {"A Miner's Anguish", 105, 115, "Dwarven Chief", "Grimroot", 525000, 0}, // 49,
-    {"A Miner Lost", 115, 125, "Dwarven Chief", "Grimroot", 680000, 0}, // 50,
-    {"Lizard's Teeth", 95, 105, "Dwarven Shaman", "Grimroot", 395000, 0}, // 51,
-    {"Collecting Berries", 100, 110, "Dwarven Shaman", "Grimroot", 455000, 0}, // 52,
-    {"Elitist Head", 105, 115, "Dwarven Shaman", "Grimroot", 525000, 0}, // 53,
-    {"Looking for Caligar", 55, 65, "Kelly", "Aston", 80000, 0}, // 54,
-    {"Fighting Styles", 55, 65, "Glori", "Caligar", 80000, 0}, // 55,
-    {"Obelisk Hunt", 55, 65, "Glori", "Caligar", 80000, 0}, // 56,
-    {"Find the Keyparts", 55, 65, "Glori", "Caligar", 80000, 0}, // 57,
-    {"Assemble the Key", 55, 65, "Glori", "Caligar", 80000, 0}, // 58,
-    {"Amazon Invaders", 55, 65, "Homdem", "Caligar", 80000, 0}, // 59,
-    {"The Emperor's Plaque", 55, 65, "Kelly", "Aston", 240000, 0}, // 60,
-
-    {"The Imperial Vault", 26, 28, "Carlos", "Aston", 20000, 0}, // 61,
-    {"Tunnel Magics", 26, 28, "Rouven", "Imperial Vault", 10000, 0}, // 62,
-    {"Chronicles of Seyan", 26, 28, "Rouven", "Imperial Vault", 10000, 0}, // 63,
-
-    {"Finding Arkhata", 47, 55, "Guard", "Brannington", 60000, 0}, // 64,
-    {"Rammy's Crown", 48, 58, "Rammy", "Arkhata", 60000, 0}, // 65,
-    {"Ishtar's Bracelet", 49, 59, "Jaz", "Arkhata", 60000, 0}, // 66,
-    {"Queen Fiona's Ring", 50, 60, "Queen Fiona", "Arkhata", 60000, 0}, // 67,
-    {"A Shopkeeper's Fright", 51, 61, "Ramin", "Arkhata", 60000, 0}, // 68,
-    {"The Monks' Request", 52, 62, "Johnatan", "Arkhata", 60000, 0}, // 69,
-    {"The Book Eater", 53, 63, "Tracy", "Arkhata", 60000, 0}, // 70,
-    {"Entrance Passes", 54, 64, "Rammy", "Arkhata", 90000, 0}, // 71,
-    {"The Source", 60, 70, "Jada", "Arkhata", 120000, 0}, // 72,
-    {"Ceremonial Pot", 48, 58, "Pot Maker", "Arkhata", 60000, 0}, // 73,
-    {"The Lost Secrets", 49, 59, "Thai Pan", "Arkhata", 60000, 0}, // 74,
-    {"A Kidnapped Student", 53, 63, "Trainer", "Arkhata", 60000, 0}, // 75,
-    {"The Traitors", 53, 63, "Clerk", "Arkhata", 60000, 0}, // 76,
-    {"The Blue Harpy", 58, 68, "Hunter", "Arkhata", 60000, 0}, // 77,
-    {"The Mysterious Language", 60, 65, "Johnatan", "Arkhata", 60000, 0}, // 78,
-
-
+	{0,  "Lydia's Potion",              1,   2,   "James",         "Cameron",          1},
+	{1,  "Find the Magic Item",         2,   3,   "Gwendylon",     "Cameron",          2},
+	{2,  "The Second Skull",            3,   5,   "Gwendylon",     "Cameron",          3},
+	{3,  "The Third Skull",             5,   7,   "Gwendylon",     "Cameron",          4},
+	{4,  "Kill the Foul Magician",      6,   8,   "Gwendylon",     "Cameron",          6},
+	{5,  "Bear Hunt",                   6,   8,   "Yoakin",        "Cameron",          9},
+	{6,  "A Fool's Request",            6,   8,   "Nook",          "Cameron",          5},
+	{7,  "Mages Gone Berserk",          6,   9,   "Guiwynn",       "Cameron",          7},
+	{8,  "The Recipe for Happiness",    7,   10,  "Guiwynn",       "Cameron",          8},
+	{9,  "Knightly Troubles",           7,   10,  "Logain",        "Cameron",          9},
+	{10, "Loisan's House",              9,   12,  "Seymour",       "Aston",            10},
+	{11, "The Silver Skull",            10,  13,  "Seymour",       "Aston",            11},
+	{12, "Find Loisan",                 11,  15,  "Seymour",       "Aston",            12},
+	{13, "Jeepers Creepers",            12,  18,  "Kelly",         "Aston",            15},
+	{14, "Underground Park Shrines",    15,  20,  "Kelly",         "Aston",            17},
+	{15, "In Search of Clara",          20,  27,  "Kelly",         "Aston",            23},
+	{16, "The Astronomer's Notes",      15,  20,  "Gerassimo",     "Aston",            17},
+	{17, "The Unwanted Tenants",        9,   12,  "Reskin",        "Cameron",          10},
+	{18, "The Toughest Monster",        20,  25,  "Sir Jones",     "Aston",            22},
+	{19, "The Toughestest Monster",     20,  26,  "Sir Jones",     "Aston",            23},
+	{20, "Wanted: Occult Staff",        30,  36,  "Carlos",        "Aston",            33},
+	{21, "Slay the Swampbeast",         23,  30,  "Clara",         "Swamp",            26},
+	{22, "Impish Bear Hunt",            20,  27,  "William/Imp",   "Forest",           23},
+	{23, "Praying Mantis Stew",         20,  27,  "William",       "Forest",           24},
+	{24, "The Spider Queen",            25,  30,  "Hermit",        "Forest",           27},
+	{25, "Earning the Lockpick",        25,  30,  "Guildmaster",   "Exkordon",         0},
+	{26, "Extortion",                   25,  30,  "Guildmaster",   "Exkordon",         0},
+	{27, "Price Fix Exposed",           25,  30,  "Guildmaster",   "Exkordon",         27},
+	{28, "The Golden Lockpick",         26,  33,  "Guildmaster",   "Exkordon",         29},
+	{29, "Dirty Hands",                 26,  33,  "Sanwyn",        "Exkordon",         0},
+	{30, "The Old Governor's Cross",    33,  40,  "Skeleton",      "Exkordon",         36},
+	{31, "Spider Poison",               30,  40,  "Cervik",        "Exkordon",         35},
+	{32, "Join the Tribe",              63,  80,  "Kalanur",       "Nomad Plains",     70},
+	{33, "Searching Sarkilar",          63,  80,  "Kir Laas",      "Nomad Plains",     70},
+	{34, "A Golden Statue",             72,  90,  "Kir Garan",     "Nomad Plains",     80},
+	{35, "Smuggler Book",               14,  17,  "Imp. Commander","Below Aston 2",    15},
+	{36, "Contraband",                  14,  17,  "Imp. Commander","Below Aston 2",    0},
+	{37, "Smuggler Leader",             14,  17,  "Imp. Commander","Below Aston 2",    15},
+	{38, "The Family Heirloom",         32,  40,  "Aristocrat",    "Bran. Forest",     36},
+	{39, "Bear Hunt - Again",           32,  36,  "Yoatin",        "Bran. Forest",     34},
+	{40, "The Jewels of Brannington",   30,  36,  "Count B.",      "Brannington",      0},
+	{41, "A Grolm's Spoils",            33,  42,  "Brenneth",      "Brannington",      37},
+	{42, "A Thief's Loot",              33,  42,  "Brenneth",      "Brannington",      37},
+	{43, "A Necromancer's Notes",       33,  42,  "Brenneth",      "Brannington",      37},
+	{44, "A Rest Disturbed",            36,  43,  "Spirit",        "Brannington",      39},
+	{45, "Searching a Miner's Tool",    42,  48,  "Broklin",       "Brannington",      45},
+	{46, "A Miner's Vengeance",         44,  50,  "Broklin",       "Brannington",      47},
+	{47, "A Miner's Misery",            85,  95,  "Dwarven Chief", "Grimroot",         90},
+	{48, "A Miner's Bane",              95,  105, "Dwarven Chief", "Grimroot",         100},
+	{49, "A Miner's Anguish",           105, 115, "Dwarven Chief", "Grimroot",         110},
+	{50, "A Miner Lost",                115, 125, "Dwarven Chief", "Grimroot",         120},
+	{51, "Lizard's Teeth",              95,  105, "Dwarven Shaman","Grimroot",         100},
+	{52, "Collecting Berries",          100, 110, "Dwarven Shaman","Grimroot",         105},
+	{53, "Elitist Head",                105, 115, "Dwarven Shaman","Grimroot",         110},
+	{54, "Looking for Caligar",         55,  65,  "Kelly",         "Aston",            60},
+	{55, "Fighting Styles",             55,  65,  "Glori",         "Caligar",          60},
+	{56, "Obelisk Hunt",                55,  65,  "Glori",         "Caligar",          60},
+	{57, "Find the Keyparts",           55,  65,  "Glori",         "Caligar",          60},
+	{58, "Assemble the Key",            55,  65,  "Glori",         "Caligar",          60},
+	{59, "Amazon Invaders",             55,  65,  "Homdem",        "Caligar",          60},
+	{60, "The Emperor's Plaque",        55,  65,  "Kelly",         "Aston",            63},
+	{61, "The Imperial Vault",          26,  28,  "Carlos",        "Aston",            27},
+	{62, "Tunnel Magics",               26,  28,  "Rouven",        "Imperial Vault",   27},
+	{63, "Chronicles of Seyan",         26,  28,  "Rouven",        "Imperial Vault",   27},
+	{64, "Finding Arkhata",             48,  58,  "Guard",         "Brannington",      53},
+	{65, "Rammy's Crown",               50,  60,  "Rammy",         "Arkhata",          55},
+	{66, "Ishtar's Bracelet",           50,  60,  "Jaz",           "Arkhata",          55},
+	{67, "Queen Fiona's Ring",          55,  65,  "Queen Fiona",   "Arkhata",          60},
+	{68, "A Shopkeeper's Fright",       58,  68,  "Ramin",         "Arkhata",          63},
+	{69, "The Monks' Request",          58,  68,  "Johnatan",      "Arkhata",          63},
+	{70, "The Book Eater",              58,  68,  "Tracy",         "Arkhata",          63},
+	{71, "Entrance Passes",             58,  66,  "Rammy",         "Arkhata",          62},
+	{72, "The Source",                  70,  80,  "Jada",          "Arkhata",          75},
+	{73, "Ceremonial Pot",              52,  62,  "Pot Maker",     "Arkhata",          57},
+	{74, "The Lost Secrets",            52,  62,  "Thai Pan",      "Arkhata",          57},
+	{75, "A Kidnapped Student",         63,  73,  "Trainer",       "Arkhata",          68},
+	{76, "The Traitors",                60,  70,  "Clerk",         "Arkhata",          65},
+	{77, "The Blue Harpy",              58,  68,  "Hunter",        "Arkhata",          63},
+	{78, "The Mysterious Language",     60,  65,  "Johnatan",      "Arkhata",          62},
 };
 DLL_EXPORT struct questlog *game_questlog = _game_questlog;
 int _game_questcount = ARRAYSIZE(_game_questlog);
@@ -115,29 +108,70 @@ DLL_EXPORT int *game_questcount = &_game_questcount;
 
 int questonscreen[10];
 
-static int questproz(int cnt)
+int questlist[MAXQUEST], questinit = 0;
+
+static struct questlog *questlog_data_from_ID(int qid)
 {
 	int n;
-	float val = 100.0f;
 
-	for (n = 0; n < cnt; n++) {
-		val *= 0.825f;
+	for (n = 0; n < *game_questcount; n++) {
+		if (game_questlog[n].ID == qid) {
+			return &game_questlog[n];
+		}
 	}
-	return (int)val;
+
+	return NULL;
 }
 
-int questlist[MAXQUEST], questinit = 0;
+static unsigned short int questlog_color_from_level(const struct questlog *questdata, int qid)
+{
+	int cn;
+	stat_t level;
+
+	if (!questdata) {
+		return graycolor;
+	}
+	if (qid >= 0 && qid < MAXQUEST && (quest[qid].flags & QF_DONE)) {
+		return graycolor;
+	}
+	if (plrmn < 0 || !map[plrmn].cn) {
+		return graycolor;
+	}
+
+	cn = (int)map[plrmn].cn;
+	level = player[cn].level;
+
+	if (level < questdata->minlevel) {
+		return redcolor;
+	}
+	if (level > questdata->maxlevel) {
+		return greencolor;
+	}
+
+	return graycolor;
+}
 
 static int questcmp(const void *a, const void *b)
 {
 	const int *va = (const int *)a;
 	const int *vb = (const int *)b;
+	struct questlog *qa = questlog_data_from_ID(*va);
+	struct questlog *qb = questlog_data_from_ID(*vb);
 
-	if (game_questlog[*va].minlevel != game_questlog[*vb].minlevel) {
-		return game_questlog[*vb].minlevel - game_questlog[*va].minlevel;
+	if (!qa && !qb) {
+		return *va - *vb;
 	}
-	if (game_questlog[*va].maxlevel != game_questlog[*vb].maxlevel) {
-		return game_questlog[*vb].maxlevel - game_questlog[*va].maxlevel;
+	if (!qa) {
+		return 1;
+	}
+	if (!qb) {
+		return -1;
+	}
+	if (qa->minlevel != qb->minlevel) {
+		return qb->minlevel - qa->minlevel;
+	}
+	if (qa->maxlevel != qb->maxlevel) {
+		return qb->maxlevel - qa->maxlevel;
 	}
 	return *va - *vb;
 }
@@ -325,7 +359,7 @@ int do_display_questlog(int nr)
 
 	if (!questinit) {
 		for (n = 0; n < *game_questcount; n++) {
-			questlist[n] = n;
+			questlist[n] = game_questlog[n].ID;
 		}
 		qsort(questlist, (size_t)*game_questcount, sizeof(int), questcmp);
 		questinit = 1;
@@ -348,40 +382,36 @@ int do_display_questlog(int nr)
 
 	for (pass = cnt = 0; pass < 2; pass++) {
 		for (m = 0; m < *game_questcount; m++) {
-			n = questlist[m];
+			struct questlog *questdata;
+			unsigned short int questcolor;
+			int qid = questlist[m];
 
-			if ((pass == 0 && (quest[n].flags) == QF_OPEN && quest[n].done < 10) ||
-			    (pass == 1 && (quest[n].flags) == QF_DONE)) {
+			if (qid < 0 || qid >= MAXQUEST) {
+				continue;
+			}
+			if (!(questdata = questlog_data_from_ID(qid))) {
+				continue;
+			}
+			questcolor = questlog_color_from_level(questdata, qid);
+
+			if ((pass == 0 && (quest[qid].flags) == QF_OPEN && quest[qid].done < 10) ||
+			    (pass == 1 && (quest[qid].flags) == QF_DONE)) {
 				if (cnt >= off) {
-					if ((game_questlog[n].flags & QLF_REPEATABLE) && (quest[n].flags & QF_DONE) && quest[n].done < 10) {
-						render_text(dotx(DOT_HLP) + 200, y, lightbluecolor, RENDER_TEXT_RIGHT, "Re-Open");
-					}
-					if ((game_questlog[n].flags & QLF_XREPEAT) && (quest[n].flags & QF_DONE)) {
-						render_text(dotx(DOT_HLP) + 200, y, graycolor, RENDER_TEXT_RIGHT, "(Junk Item)");
-					}
-					sprintf(buf, "Quest: %s", game_questlog[n].name);
-					render_text(dotx(DOT_HLP) + 10, y, whitecolor, 0, buf);
+					sprintf(buf, "Quest: %s", questdata->name);
+					render_text(dotx(DOT_HLP) + 10, y, questcolor, 0, buf);
 					y += 10;
 
-					sprintf(buf, "From: %s in %s.", game_questlog[n].giver, game_questlog[n].area);
+					sprintf(buf, "From: %s in %s.", questdata->giver, questdata->area);
 					render_text(dotx(DOT_HLP) + 10, y, graycolor, 0, buf);
 					y += 10;
 
-					if (game_questlog[n].flags & (QLF_REPEATABLE | QLF_XREPEAT)) {
-						sprintf(buf, "Done: %d time%s (%d%% exp). %s.", quest[n].done, quest[n].done != 1 ? "s" : "",
-						    questproz(quest[n].done), (quest[n].flags & QF_DONE) ? "Done" : "Open");
-						render_text(dotx(DOT_HLP) + 10, y, graycolor, 0, buf);
-						y += 10;
-					} else {
-						sprintf(buf, "Done: %d time. (not repeatable). %s.", quest[n].done,
-						    (quest[n].flags & QF_DONE) ? "Done" : "Open");
-						render_text(dotx(DOT_HLP) + 10, y, graycolor, 0, buf);
-						y += 10;
-					}
+					sprintf(buf, "Status: %s.", (quest[qid].flags & QF_DONE) ? "Quest Complete" : "Open");
+					render_text(dotx(DOT_HLP) + 10, y, graycolor, 0, buf);
+					y += 10;
 					y += 10;
 				}
 				if (cnt - off >= 0 && cnt - off < 10) {
-					questonscreen[cnt - off] = n;
+					questonscreen[cnt - off] = qid;
 				}
 				cnt++;
 				if (cnt >= off + 9) {
@@ -403,11 +433,5 @@ int do_display_questlog(int nr)
 
 void quest_select(int nr)
 {
-	if (nr < 0 || nr > 9) {
-		return;
-	}
-
-	if (questonscreen[nr] != -1) {
-		cmd_reopen_quest(questonscreen[nr]);
-	}
+	(void)nr;
 }
