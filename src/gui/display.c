@@ -23,6 +23,59 @@ int show_tutor = 0;
 
 int __textdisplay_sy;
 
+static void format_int_commas(int value, char *buf, size_t buf_size)
+{
+	char digits[32];
+	char reversed[32];
+	unsigned int magnitude;
+	size_t digits_len;
+	size_t out_len;
+	size_t idx;
+	size_t out_idx;
+	int negative;
+
+	if (!buf_size) {
+		return;
+	}
+
+	negative = value < 0;
+	if (negative) {
+		magnitude = (unsigned int)(-(value + 1)) + 1U;
+	} else {
+		magnitude = (unsigned int)value;
+	}
+
+	snprintf(digits, sizeof(digits), "%u", magnitude);
+	digits_len = strlen(digits);
+	out_len = digits_len + (digits_len > 0 ? (digits_len - 1) / 3 : 0) + (negative ? 1U : 0U);
+
+	if (out_len + 1 > sizeof(reversed)) {
+		buf[0] = 0;
+		return;
+	}
+
+	out_idx = 0;
+	for (idx = 0; idx < digits_len; idx++) {
+		if (idx > 0 && idx % 3 == 0) {
+			reversed[out_idx++] = ',';
+		}
+		reversed[out_idx++] = digits[digits_len - 1 - idx];
+	}
+	if (negative) {
+		reversed[out_idx++] = '-';
+	}
+
+	if (out_idx + 1 > buf_size) {
+		buf[0] = 0;
+		return;
+	}
+
+	for (idx = 0; idx < out_idx; idx++) {
+		buf[idx] = reversed[out_idx - 1 - idx];
+	}
+	buf[out_idx] = 0;
+}
+
 static void dx_drawtext_gold(int x, int y, unsigned short int color, int amount)
 {
 	if (amount > 99) {
@@ -877,6 +930,7 @@ void display_selfspells(void)
 void display_exp(void)
 {
 	static int last_exp = 0, exp_ticker = 0;
+	char step_buf[32], total_buf[32];
 
 	snprintf(hover_level_text, sizeof(hover_level_text), "Level: unknown");
 
@@ -909,8 +963,11 @@ void display_exp(void)
 			exp_ticker--;
 		}
 
-		snprintf(hover_level_text, sizeof(hover_level_text), "Level: %d to %d\nRemaining exp to level: %d\nTotal exp: %d",
-		    clevel, nlevel, step, expe);
+		format_int_commas(step, step_buf, sizeof(step_buf));
+		format_int_commas(expe, total_buf, sizeof(total_buf));
+
+		snprintf(hover_level_text, sizeof(hover_level_text),
+		    "Level: %d to %d\nRemaining exp to level: %s\nTotal exp: %s", clevel, nlevel, step_buf, total_buf);
 	}
 }
 
@@ -963,6 +1020,7 @@ DLL_EXPORT int mil_rank(int exp)
 void display_military(void)
 {
 	int step, total, rank, cost1, cost2;
+	char remaining_buf[32], total_buf[32];
 
 	snprintf(hover_rank_text, sizeof(hover_rank_text), "Rank: Not enlisted");
 
@@ -983,12 +1041,16 @@ void display_military(void)
 			render_sprite(993, dotx(DOT_TOP) + 31, doty(DOT_TOP) + 24, RENDERFX_NORMAL_LIGHT, RENDER_ALIGN_NORMAL);
 			render_pop_clip();
 
+			format_int_commas(total - step, remaining_buf, sizeof(remaining_buf));
+			format_int_commas((int)mil_exp, total_buf, sizeof(total_buf));
+
 			snprintf(hover_rank_text, sizeof(hover_rank_text),
-			    "Rank: %s to %s\nRemaining exp to rank: %d\nTotal exp: %d", game_rankname[rank], game_rankname[rank + 1],
-			    total - step, (int)mil_exp);
+			    "Rank: %s to %s\nRemaining mil exp to rank: %s\nTotal mil exp: %s", game_rankname[rank],
+			    game_rankname[rank + 1], remaining_buf, total_buf);
 		} else {
-			snprintf(hover_rank_text, sizeof(hover_rank_text), "Rank: %s\nRemaining exp to rank: 0\nTotal exp: %d",
-			    game_rankname[*game_rankcount - 1], (int)mil_exp);
+			format_int_commas((int)mil_exp, total_buf, sizeof(total_buf));
+			snprintf(hover_rank_text, sizeof(hover_rank_text), "Rank: %s\nRemaining mil exp to rank: 0\nTotal mil exp: %s",
+			    game_rankname[*game_rankcount - 1], total_buf);
 		}
 	}
 }

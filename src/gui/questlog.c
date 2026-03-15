@@ -67,7 +67,7 @@ static unsigned short int questlog_color_from_level(const struct questlog *quest
 		return greencolor;
 	}
 
-	return graycolor;
+	return whitecolor;
 }
 
 static int questcmp(const void *a, const void *b)
