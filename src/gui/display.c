@@ -878,7 +878,7 @@ void display_exp(void)
 {
 	static int last_exp = 0, exp_ticker = 0;
 
-	sprintf(hover_level_text, "Level: unknown");
+	snprintf(hover_level_text, sizeof(hover_level_text), "Level: unknown");
 
 	int cn = (int)map[MAPDX * MAPDY / 2].cn;
 	int level = player[cn].level;
@@ -909,7 +909,8 @@ void display_exp(void)
 			exp_ticker--;
 		}
 
-		sprintf(hover_level_text, "Level: From %d to %d", clevel, nlevel);
+		snprintf(hover_level_text, sizeof(hover_level_text), "Level: %d to %d\nRemaining exp to level: %d\nTotal exp: %d",
+		    clevel, nlevel, step, expe);
 	}
 }
 
@@ -963,7 +964,7 @@ void display_military(void)
 {
 	int step, total, rank, cost1, cost2;
 
-	sprintf(hover_rank_text, "Rank: none or unknown");
+	snprintf(hover_rank_text, sizeof(hover_rank_text), "Rank: Not enlisted");
 
 	rank = mil_rank((int)mil_exp);
 	cost1 = rank * rank * rank;
@@ -982,9 +983,12 @@ void display_military(void)
 			render_sprite(993, dotx(DOT_TOP) + 31, doty(DOT_TOP) + 24, RENDERFX_NORMAL_LIGHT, RENDER_ALIGN_NORMAL);
 			render_pop_clip();
 
-			sprintf(hover_rank_text, "Rank: '%s' to '%s'", game_rankname[rank], game_rankname[rank + 1]);
+			snprintf(hover_rank_text, sizeof(hover_rank_text),
+			    "Rank: %s to %s\nRemaining exp to rank: %d\nTotal exp: %d", game_rankname[rank], game_rankname[rank + 1],
+			    total - step, (int)mil_exp);
 		} else {
-			sprintf(hover_rank_text, "%s", game_rankname[*game_rankcount - 1]);
+			snprintf(hover_rank_text, sizeof(hover_rank_text), "Rank: %s\nRemaining exp to rank: 0\nTotal exp: %d",
+			    game_rankname[*game_rankcount - 1], (int)mil_exp);
 		}
 	}
 }
