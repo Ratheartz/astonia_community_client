@@ -25,7 +25,7 @@
 #include "modder/modder.h"
 #include "protocol.h"
 
-#define CLIENT_PROTOCOL_VERSION 3
+#define CLIENT_PROTOCOL_VERSION 4
 
 unsigned int display_gfx = 0;
 uint32_t display_time = 0;

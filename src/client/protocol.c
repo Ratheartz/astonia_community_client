@@ -985,6 +985,41 @@ static void sv_prof(unsigned char *buf)
 	update_skltab = 1;
 }
 
+static struct questlog login_questlog[MAXQUEST];
+static int login_questcount = 0;
+
+static void clear_login_questlog_strings(void)
+{
+	int n;
+
+	for (n = 0; n < login_questcount; n++) {
+		free(login_questlog[n].name);
+		free(login_questlog[n].giver);
+		free(login_questlog[n].area);
+		login_questlog[n].name = NULL;
+		login_questlog[n].giver = NULL;
+		login_questlog[n].area = NULL;
+	}
+
+	login_questcount = 0;
+}
+
+static char *dup_login_questlog_string(const unsigned char *src, size_t len)
+{
+	char *dst;
+
+	dst = (char *)malloc(len + 1);
+	if (!dst) {
+		fail("out of memory loading login questlog");
+		exit(-1);
+	}
+
+	memcpy(dst, src, len);
+	dst[len] = 0;
+
+	return dst;
+}
+
 DLL_EXPORT struct quest quest[MAXQUEST];
 DLL_EXPORT struct shrine_ppd shrine;
 
@@ -996,6 +1031,72 @@ static void sv_questlog(unsigned char *buf)
 
 	memcpy(quest, buf + 1, size);
 	memcpy(&shrine, buf + 1 + size, sizeof(struct shrine_ppd));
+}
+
+static size_t sv_login_questlog(unsigned char *buf)
+{
+	size_t packet_len;
+	size_t p;
+	uint8_t count;
+	int n;
+
+	packet_len = load_u16(buf + 1);
+	if (packet_len < 4) {
+		fail("invalid login questlog packet length %u", (unsigned)packet_len);
+		exit(-1);
+	}
+
+	count = buf[3];
+	if (count > MAXQUEST) {
+		fail("invalid login questlog count %u", (unsigned)count);
+		exit(-1);
+	}
+
+	clear_login_questlog_strings();
+	p = 4;
+
+	for (n = 0; n < count; n++) {
+		size_t name_len;
+		size_t giver_len;
+		size_t area_len;
+
+		if (p + 7 > packet_len) {
+			fail("truncated login questlog entry header");
+			exit(-1);
+		}
+
+		login_questlog[n].ID = buf[p++];
+		login_questlog[n].minlevel = buf[p++];
+		login_questlog[n].maxlevel = buf[p++];
+		login_questlog[n].quest_level = buf[p++];
+		name_len = buf[p++];
+		giver_len = buf[p++];
+		area_len = buf[p++];
+
+		if (p + name_len + giver_len + area_len > packet_len) {
+			fail("truncated login questlog entry body");
+			exit(-1);
+		}
+
+		login_questlog[n].name = dup_login_questlog_string(buf + p, name_len);
+		p += name_len;
+		login_questlog[n].giver = dup_login_questlog_string(buf + p, giver_len);
+		p += giver_len;
+		login_questlog[n].area = dup_login_questlog_string(buf + p, area_len);
+		p += area_len;
+	}
+
+	if (p != packet_len) {
+		fail("invalid login questlog packet size %u != %u", (unsigned)p, (unsigned)packet_len);
+		exit(-1);
+	}
+
+	login_questcount = count;
+	game_questlog = login_questlog;
+	game_questcount = &login_questcount;
+	questlog_metadata_updated();
+
+	return packet_len;
 }
 
 static void sv_unique(unsigned char *buf)
@@ -1216,6 +1317,10 @@ void process(unsigned char *buf, int size)
 			case SV_REALTIME:
 				sv_realtime(buf);
 				len = 5;
+				break;
+
+			case SV_LOGIN_QUESTLOG:
+				len = sv_login_questlog(buf);
 				break;
 
 			case SV_SPEEDMODE:
@@ -1453,6 +1558,9 @@ uint32_t prefetch(unsigned char *buf, int size)
 				break;
 			case SV_REALTIME:
 				len = 5;
+				break;
+			case SV_LOGIN_QUESTLOG:
+				len = load_u16(buf + 1);
 				break;
 			case SV_SPEEDMODE:
 				len = 2;

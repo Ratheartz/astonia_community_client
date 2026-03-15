@@ -20,7 +20,6 @@
 #include "strings.c"
 #include "ranks.c"
 #include "skills.c"
-#include "quests.c"
 #endif
 
 #ifdef _WIN32

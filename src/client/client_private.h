@@ -39,7 +39,7 @@
 #define SV_UEFFECT          35
 #define SV_REALTIME         36
 #define SV_SPEEDMODE        37
-#define SV__FREE_FOR_USE2__ 38
+#define SV_LOGIN_QUESTLOG   38
 #define SV_CONTYPE          39
 #define SV_CONNAME          40
 #define SV__FREE_FOR_USE3__ 41

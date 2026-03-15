@@ -104,6 +104,7 @@ struct questlog {
 DLL_EXPORT extern struct questlog *game_questlog;
 extern int questonscreen[10];
 DLL_EXPORT extern int *game_questcount;
+void questlog_metadata_updated(void);
 extern int gear_lock;
 extern int last_right_click_invsel;
 
